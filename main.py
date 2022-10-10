@@ -4,7 +4,19 @@ import ga
 
 def main():
     # entradas da equação
-    equation_inputs = [4, -2, 3.5, 5, -11, -4.7]
+    '''
+    Saco de dormir; Peso: 15kg; Pontos 15
+    Corda; Peso: 3kg; Pontos: 10
+    Canivete; Peso: 2kg; Pontos: 10
+    Tocha: Peso: 5kg; Pontos: 5
+    Garrafa; Peso: 9kg; Pontos: 8
+    Comida; Peso: 20kg; Pontos: 17
+    
+    '''
+    
+    equation_weights = [15,3,2,5,9,20]
+    equation_points = [15,10,10,5,8,17]
+
     # número de pesos a otimizar
     num_weights = 6
 
@@ -14,7 +26,7 @@ def main():
     pop_size = (sol_per_pop, num_weights)
 
     # População inicial
-    new_population = np.random.uniform(low=-4.0, high=4.0, size=pop_size)
+    new_population = np.random.randint(2, size=pop_size)
 
     # Algoritmo genético
     num_generations = 100
@@ -24,13 +36,13 @@ def main():
         print(f"Geração: {generation}")
 
         # medir o ‘fitness’ de cada cromossomo na população
-        fitness = ga.cal_pop_fitness(equation_inputs, new_population)
+        fitness_points = ga.cal_pop_fitness(equation_weights,equation_points, new_population)
 
         print("Valores de fitness:")
-        print(fitness)
+        print(fitness_points)
 
         # Selecionar os melhores pais na população para o cruzamento
-        parents = ga.select_mating_pool(new_population, fitness, num_parents_mating)
+        parents = ga.select_mating_pool(new_population, fitness_points, num_parents_mating)
 
         print("Genitores selecionados:")
         print(parents)
@@ -51,10 +63,10 @@ def main():
         new_population[0:parents.shape[0], :] = parents
         new_population[parents.shape[0]:, :] = offspring_mutation
 
-        best_result = np.max(np.sum(new_population*equation_inputs, axis=1))
+        best_result = np.max(np.sum(new_population*equation_points, axis=1))
         print(f"Melhor resultado depois da geração {generation}: {best_result}")
 
-    fitness = ga.cal_pop_fitness(equation_inputs, new_population)
+    fitness = ga.cal_pop_fitness(equation_points,equation_weights, new_population)
     best_match_idx = np.where(fitness == np.max(fitness))
 
     print("Melhor solução: ", new_population[best_match_idx, :])
